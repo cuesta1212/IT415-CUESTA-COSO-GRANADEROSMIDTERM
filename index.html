@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Store | Order</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="ui.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand"><span class="logo">CS</span><div><strong>Campus Store</strong><span>Self-service kiosk</span></div></div>
+    <span class="stage">1 Order</span>
+  </header>
+  <main>
+    <section class="catalog" aria-labelledby="catalog-title">
+      <div class="catalog-heading"><h1 id="catalog-title">Tap a product to add it</h1><div class="filters" role="group" aria-label="Product categories"></div></div>
+      <div id="products" class="product-grid"></div>
+    </section>
+    <section class="order" aria-labelledby="order-title">
+      <div class="order-heading"><h2 id="order-title">Your Order</h2><span id="item-count">0 items</span></div>
+      <div id="cart" class="cart"></div>
+      <div class="order-footer">
+        <div class="total"><span>Total</span><strong id="total">₱0.00</strong></div>
+        <button id="proceed" class="proceed" disabled>Proceed <span aria-hidden="true">→</span></button>
+        <p class="stage-note">Stage 1: order selection only. Payment comes later.</p>
+      </div>
+    </section>
+  </main>
+  <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Ready. Tap a product to start your order.</div>
+</body>
+</html>
