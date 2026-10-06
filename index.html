@@ -23,29 +23,25 @@
       <div class="order-footer">
         <div class="total"><span>Total</span><strong id="total">₱0.00</strong></div>
         <button id="proceed" class="proceed" disabled>Review Order <span aria-hidden="true">→</span></button>
-        <p class="stage-note">Review your order before continuing. Payment comes later.</p>
+        <p class="stage-note">Payment processing is not connected yet.</p>
       </div>
     </section>
   </main>
-  <main id="review-screen" class="review-screen" hidden aria-labelledby="review-title">
-    <section class="review-panel">
-      <h1 id="review-title" tabindex="-1">Review your order</h1>
-      <p class="review-description">Check your items before paying. Tap Back to make changes — your items stay in the cart.</p>
-      <div class="review-table-wrap">
-        <table class="review-table">
-          <caption class="visually-hidden">Selected products and order amounts</caption>
-          <thead><tr><th scope="col">Product</th><th scope="col">Quantity</th><th scope="col">Unit price</th><th scope="col">Subtotal</th></tr></thead>
-          <tbody id="review-items"></tbody>
-        </table>
-      </div>
-      <div class="total review-total"><div>Total Amount <span id="review-count"></span></div><strong id="review-total">₱0.00</strong></div>
-      <div class="review-actions">
-        <button id="review-back" class="back">← Back</button>
-        <button id="continue-payment" class="proceed" disabled>Continue to Payment →</button>
-      </div>
-      <p class="stage-note">Payment is not available yet.</p>
-    </section>
-  </main>
+  <section id="review-screen" class="payment-panel" hidden aria-labelledby="review-title">
+    <h1 id="review-title" tabindex="-1">Review your order</h1>
+    <p class="payment-description">Check your items before paying. Tap Back to make changes — your cart stays intact.</p>
+    <div class="payment-table-wrap">
+      <table class="payment-table">
+        <caption class="payment-visually-hidden">Order summary</caption>
+        <thead><tr><th scope="col">Product</th><th scope="col">Quantity</th><th scope="col">Unit price</th><th scope="col">Subtotal</th></tr></thead>
+        <tbody id="review-items"></tbody>
+      </table>
+    </div>
+    <div class="total review-total"><span>Total <small id="review-count"></small></span><strong id="review-total">₱0.00</strong></div>
+    <div class="review-actions"><button id="review-back" class="back">← Back</button><button id="continue-payment" class="proceed" disabled>Continue to Payment →</button></div>
+    <p class="stage-note">Payment processing is not connected yet.</p>
+  </section>
+  <div id="payment-screen" hidden></div>
   <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Ready. Tap a product to start your order.</div>
 </body>
 </html>
