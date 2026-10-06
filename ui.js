@@ -149,7 +149,7 @@ function paymentUnavailable() {
   return { success: false, message: 'Payment processing is not connected yet. Your order has not been paid.' };
 }
 
-continuePayment.addEventListener('click', () => {
+function renderReview() {
   const order = getOrder();
   const rows = document.querySelector('#review-items');
   rows.replaceChildren();
@@ -168,29 +168,6 @@ continuePayment.addEventListener('click', () => {
   continuePayment.disabled = !order.items.length;
   return order;
 }
-
-proceed.addEventListener('click', () => {
-  if (!getOrder().items.length) return;
-  renderReview();
-  selectionScreen.hidden = true;
-  reviewScreen.hidden = false;
-  document.querySelector('.stage').textContent = '2 Review';
-  document.title = 'Campus Store | Review';
-  document.querySelector('#review-title').focus();
-  window.scrollTo(0, 0);
-  announce('Review your order. Tap Back to make changes.');
-});
-
- document.querySelector('#review-back').addEventListener('click', () => {
-  reviewScreen.hidden = true;
-  selectionScreen.hidden = false;
-  document.querySelector('.stage').textContent = '1 Order';
-  document.title = 'Campus Store | Order';
-  render();
-  proceed.focus();
-  window.scrollTo(0, 0);
-  announce('Back to product selection. Your cart has been preserved.');
-});
 
 continuePayment.addEventListener('click', () => {
   const order = renderReview();
