@@ -3,7 +3,7 @@
 body { margin: 0; }
 button { font: inherit; cursor: pointer; touch-action: manipulation; min-height: 54px; }
 button:focus-visible { outline: 4px solid #2563eb; outline-offset: 4px; }
-.header { background: #111827; color: white; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.header { background: #3e5e3b; color: white; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
 .brand { display: flex; align-items: center; gap: 16px; }
 .logo { display: grid; place-items: center; background: #bf3c05; width: 52px; height: 52px; border-radius: 16px; font-weight: 800; font-size: 22px; }
 .brand strong { display: block; font-size: 24px; }
