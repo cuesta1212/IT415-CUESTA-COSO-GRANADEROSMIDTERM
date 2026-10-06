@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Powerpuff Store | Demo QR Payment</title>
   <link rel="stylesheet" href="mobile-payment.css">
+  <link rel="stylesheet" href="review.css">
   <script type="module" src="mobile-payment.js"></script>
 </head>
 <body>
@@ -30,7 +31,8 @@
       <p>Your simulated payment is complete. Your receipt is shown below.</p>
       <div id="mobile-receipt" aria-label="Payment receipt"></div>
     </section>
-    <footer>This is a simulation; no real money is transferred. Your phone receipt is separate from the kiosk. Use Confirm Payment on the kiosk to complete its order.</footer>
+    <div id="mobile-review"></div>
+    <footer>This is a simulation; no real money is transferred. Your payment and receipt are completed on your phone.</footer>
   </main>
 </body>
 </html>

@@ -142,9 +142,14 @@ a transaction reference, purchased items, and a receipt displayed on the phone.
 No Redis database, database credentials, payment provider, or account setup is
 required. The API is stateless and stores no payment records. No real money is
 transferred. It does not notify the kiosk or track paid/cancelled/expired sessions.
-Kiosk **Confirm Payment**, **View Receipt**, and **New Transaction** remain separate
-and continue using the existing transaction functions. Cash and card flows and
-product prices are unchanged.
+The kiosk QR screen contains only the QR and scanning instructions, with no
+Confirm Payment button or Open payment page link. QR confirmation and its receipt
+are completed on the phone. Cash/card kiosk receipts and New Transaction continue
+using the existing transaction functions. Product prices are unchanged.
+
+After payment, customers can leave a five-star rating and optional comment on the
+phone, or on cash/card kiosk receipts. Reviews are saved in this device's browser
+localStorage (up to 20 reviews), not sent to an API or a public database.
 
 The phone blocks repeated clicks during processing and after confirmation. Its
 receipt lasts until the page is reloaded/closed. Repeated API requests are not
@@ -160,8 +165,7 @@ can be edited; the API recalculates their prices from `products.js` on every req
 3. The `api/qr-payment.js` Node.js function must be included with the static UI.
 4. Open your public production URL on the kiosk and generate a fresh QR.
 5. Scan it on a phone, check the amount, and tap **Confirm Payment**.
-6. The phone should show **Payment Confirmed** and the receipt. Complete the
-   kiosk order using its own Confirm Payment button when needed.
+6. The phone should show **Payment Confirmed**, its receipt, and a customer-review form.
 
 Old session-token QR links no longer work; scan a fresh code after deploying.
 Upstash variables are no longer used. Both devices need internet for a public

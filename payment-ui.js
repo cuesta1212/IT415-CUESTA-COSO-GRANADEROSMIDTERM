@@ -1,6 +1,7 @@
 const money = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 import { iconMarkup } from './icons.js';
 import { renderPaymentQR } from './qr-payment.js';
+import { renderReviewForm } from './review-ui.js';
 const mounts = new WeakMap();
 const amount = value => typeof value === 'number' && Number.isFinite(value) ? money.format(value) : '—';
 function node(tag, text, className) {
@@ -163,8 +164,7 @@ export function renderPaymentUI(container, order, {
     } else if (method === 'QR Payment') {
       content.append(renderPaymentQR(order),
         node('p', `Amount due: ${amount(order.total)}`),
-        node('p', 'Scan the QR to confirm the simulated payment and view a receipt on your phone. Kiosk confirmation is separate; use Confirm Payment here to complete this kiosk order.', 'payment-description'),
-        button('Confirm Payment', 'proceed', () => pay(onQRConfirm)));
+        node('p', 'Scan the QR to confirm the simulated payment and view your receipt on your phone.', 'payment-description'));
     } else {
       content.append(node('p', `Amount due: ${amount(order.total)}`),
         node('p', 'Tap, insert, or swipe at a connected terminal. In this simulation, tap Process Payment; no card details or real charge are required.', 'payment-description'),
@@ -218,7 +218,7 @@ export function renderReceiptUI(container, transaction, { onNewTransaction } = {
       if (view.active()) { busy = false; reset.disabled = finished; panel.setAttribute('aria-busy', 'false'); }
     }
   });
-  panel.append(details(transaction), wrap, node('p', 'Thank you for your purchase!'), reset, feedback);
+  panel.append(details(transaction), wrap, node('p', 'Thank you for your purchase!'), renderReviewForm(transaction.reference), reset, feedback);
   return view.dispose;
 }
 

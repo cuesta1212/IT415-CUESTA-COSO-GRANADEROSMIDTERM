@@ -16,9 +16,7 @@ export function renderPaymentQR(order) {
     const graphic = document.createElement('div'); graphic.className = 'payment-qr-image';
     graphic.setAttribute('role', 'img'); graphic.setAttribute('aria-label', 'Scan to open the phone payment page');
     graphic.innerHTML = qr.createSvgTag({ cellSize: 5, margin: 20, scalable: true });
-    const link = document.createElement('a'); link.className = 'qr-payment-link';
-    link.textContent = 'Open payment page'; link.href = url.href; link.target = '_blank'; link.rel = 'noopener';
-    block.append(graphic, link);
+    block.append(graphic);
     note.textContent = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
       ? 'This local address cannot be opened on a phone. Open the kiosk through your public Vercel URL or a same-Wi-Fi network address.'
       : 'Scan using your phone camera. Confirm Payment on the phone creates a demo receipt on that device.';

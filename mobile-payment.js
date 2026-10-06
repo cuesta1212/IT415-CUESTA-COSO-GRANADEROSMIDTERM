@@ -1,4 +1,5 @@
 import { requestQRPayment } from './qr-payment-client.js';
+import { renderReviewForm } from './review-ui.js';
 
 // Scanning another QR into an existing browser tab must load the new session.
 window.addEventListener('hashchange', () => location.reload());
@@ -47,6 +48,7 @@ function showSuccess(transaction) {
     items.append(row);
   }
   receipt.append(details, items);
+  document.querySelector('#mobile-review').replaceChildren(renderReviewForm(transaction.reference));
   document.querySelector('#mobile-success').hidden = false;
   document.querySelector('#mobile-success-title').focus();
   document.querySelector('#mobile-success').scrollIntoView({ block: 'center', behavior: 'auto' });
