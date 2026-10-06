@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Campus Store | Order</title>
+  <title>PowePuff Store | Order</title>
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="ui.js"></script>
 </head>
 <body>
   <header class="header">
-    <div class="brand"><span class="logo">CS</span><div><strong>Campus Store</strong><span>Self-service kiosk</span></div></div>
+    <div class="brand"><span class="logo">CS</span><div><strong>PowePuff Store</strong><span>Self-service kiosk</span></div></div>
     <span class="stage">1 Order</span>
   </header>
-  <main>
+  <main id="selection-screen">
     <section class="catalog" aria-labelledby="catalog-title">
       <div class="catalog-heading"><h1 id="catalog-title">Tap a product to add it</h1><div class="filters" role="group" aria-label="Product categories"></div></div>
       <div id="products" class="product-grid"></div>
@@ -22,9 +22,28 @@
       <div id="cart" class="cart"></div>
       <div class="order-footer">
         <div class="total"><span>Total</span><strong id="total">₱0.00</strong></div>
-        <button id="proceed" class="proceed" disabled>Proceed <span aria-hidden="true">→</span></button>
-        <p class="stage-note">Stage 1: order selection only. Payment comes later.</p>
+        <button id="proceed" class="proceed" disabled>Review Order <span aria-hidden="true">→</span></button>
+        <p class="stage-note">Review your order before continuing. Payment comes later.</p>
       </div>
+    </section>
+  </main>
+  <main id="review-screen" class="review-screen" hidden aria-labelledby="review-title">
+    <section class="review-panel">
+      <h1 id="review-title" tabindex="-1">Review your order</h1>
+      <p class="review-description">Check your items before paying. Tap Back to make changes — your items stay in the cart.</p>
+      <div class="review-table-wrap">
+        <table class="review-table">
+          <caption class="visually-hidden">Selected products and order amounts</caption>
+          <thead><tr><th scope="col">Product</th><th scope="col">Quantity</th><th scope="col">Unit price</th><th scope="col">Subtotal</th></tr></thead>
+          <tbody id="review-items"></tbody>
+        </table>
+      </div>
+      <div class="total review-total"><div>Total Amount <span id="review-count"></span></div><strong id="review-total">₱0.00</strong></div>
+      <div class="review-actions">
+        <button id="review-back" class="back">← Back</button>
+        <button id="continue-payment" class="proceed" disabled>Continue to Payment →</button>
+      </div>
+      <p class="stage-note">Payment is not available yet.</p>
     </section>
   </main>
   <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Ready. Tap a product to start your order.</div>

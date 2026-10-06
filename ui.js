@@ -120,12 +120,59 @@ cart.addEventListener('click', event => {
   } catch (error) { announce(error.message); }
 });
 
-proceed.addEventListener('click', () => {
+const selectionScreen = document.querySelector('#selection-screen');
+const reviewScreen = document.querySelector('#review-screen');
+const continuePayment = document.querySelector('#continue-payment');
+
+function renderReview() {
   const order = getOrder();
+  const rows = document.querySelector('#review-items');
+  rows.replaceChildren();
+  for (const item of order.items) {
+    const row = document.createElement('tr');
+    for (const value of [item.name, item.quantity, money.format(item.price), money.format(item.subtotal)]) {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.append(cell);
+    }
+    rows.append(row);
+  }
+  const count = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  document.querySelector('#review-count').textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+  document.querySelector('#review-total').textContent = money.format(order.total);
+  continuePayment.disabled = !order.items.length;
+  return order;
+}
+
+proceed.addEventListener('click', () => {
+  if (!getOrder().items.length) return;
+  renderReview();
+  selectionScreen.hidden = true;
+  reviewScreen.hidden = false;
+  document.querySelector('.stage').textContent = '2 Review';
+  document.title = 'Campus Store | Review';
+  document.querySelector('#review-title').focus();
+  window.scrollTo(0, 0);
+  announce('Review your order. Tap Back to make changes.');
+});
+
+ document.querySelector('#review-back').addEventListener('click', () => {
+  reviewScreen.hidden = true;
+  selectionScreen.hidden = false;
+  document.querySelector('.stage').textContent = '1 Order';
+  document.title = 'Campus Store | Order';
+  render();
+  proceed.focus();
+  window.scrollTo(0, 0);
+  announce('Back to product selection. Your cart has been preserved.');
+});
+
+continuePayment.addEventListener('click', () => {
+  const order = renderReview();
   if (!order.items.length) return;
-  // Integration boundary for a later review/payment module; no payment occurs.
+  // Integration boundary only: no payment or transaction is processed.
   document.dispatchEvent(new CustomEvent('order:proceed', { detail: order }));
-  announce(`Order ready — ${money.format(order.total)}. Payment is not available in this stage.`);
+  announce(`Order ready — ${money.format(order.total)}. Payment is not available yet.`);
 });
 
 render();
