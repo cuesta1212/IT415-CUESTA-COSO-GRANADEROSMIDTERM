@@ -12,7 +12,7 @@
     <div class="brand"><span class="logo">CS</span><div><strong>Campus Store</strong><span>Self-service kiosk</span></div></div>
     <span class="stage">1 Order</span>
   </header>
-  <main>
+  <main id="selection-screen">
     <section class="catalog" aria-labelledby="catalog-title">
       <div class="catalog-heading"><h1 id="catalog-title">Tap a product to add it</h1><div class="filters" role="group" aria-label="Product categories"></div></div>
       <div id="products" class="product-grid"></div>
@@ -22,11 +22,26 @@
       <div id="cart" class="cart"></div>
       <div class="order-footer">
         <div class="total"><span>Total</span><strong id="total">₱0.00</strong></div>
-        <button id="proceed" class="proceed" disabled>Proceed <span aria-hidden="true">→</span></button>
-        <p class="stage-note">Stage 1: order selection only. Payment comes later.</p>
+        <button id="proceed" class="proceed" disabled>Review Order <span aria-hidden="true">→</span></button>
+        <p class="stage-note">Payment processing is not connected yet.</p>
       </div>
     </section>
   </main>
+  <section id="review-screen" class="payment-panel" hidden aria-labelledby="review-title">
+    <h1 id="review-title" tabindex="-1">Review your order</h1>
+    <p class="payment-description">Check your items before paying. Tap Back to make changes — your cart stays intact.</p>
+    <div class="payment-table-wrap">
+      <table class="payment-table">
+        <caption class="payment-visually-hidden">Order summary</caption>
+        <thead><tr><th scope="col">Product</th><th scope="col">Quantity</th><th scope="col">Unit price</th><th scope="col">Subtotal</th></tr></thead>
+        <tbody id="review-items"></tbody>
+      </table>
+    </div>
+    <div class="total review-total"><span>Total <small id="review-count"></small></span><strong id="review-total">₱0.00</strong></div>
+    <div class="review-actions"><button id="review-back" class="back">← Back</button><button id="continue-payment" class="proceed" disabled>Continue to Payment →</button></div>
+    <p class="stage-note">Payment processing is not connected yet.</p>
+  </section>
+  <div id="payment-screen" hidden></div>
   <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Ready. Tap a product to start your order.</div>
 </body>
 </html>

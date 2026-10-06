@@ -52,3 +52,49 @@ h3 { margin: 0; font-size: 22px; }
 @media (max-width: 1100px) { .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.catalog, .order { padding: 22px; } }
 @media (max-width: 760px) { main { grid-template-columns: 1fr; }.header { padding: 16px; }.brand strong { font-size: 21px; }.catalog, .order { padding: 20px; }.order { border-left: 0; border-top: 1px solid #dfe3eb; }.product-grid { gap: 12px; }.product-card { padding: 12px; }.product-info { font-size: 18px; }.product-art { height: 140px; }.empty { padding: 35px 10px; } }
 @media (prefers-reduced-motion: reduce) { .product-card:active { transform: none; } }
+
+/* Payment UI only: no selectors here change the ordering interface. */
+.payment-panel { max-width: 1050px; margin: 30px auto; padding: 32px; background: white; border: 1px solid #dfe3eb; border-radius: 22px; }
+.payment-panel .back { border: 1px solid #cbd2dd; border-radius: 18px; padding: 20px 32px; min-height: 72px; background: white; color: #111827; font-size: 24px; font-weight: 800; }
+.payment-due { margin: 24px 0; }
+.payment-methods { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 24px 0; }
+.payment-methods .back { padding: 20px 12px; font-size: 21px; }
+.payment-methods [aria-pressed="true"] { background: #111827; color: white; }
+.payment-content { padding: 24px; border: 1px solid #dfe3eb; border-radius: 20px; margin-bottom: 20px; }
+.payment-description { font-size: 18px; line-height: 1.6; color: #535f70; }
+.payment-label { display: block; margin-top: 24px; font-weight: 700; font-size: 20px; }
+.payment-input { display: block; width: 100%; min-height: 64px; padding: 12px; margin-top: 12px; font: inherit; font-size: 26px; border: 1px solid #cbd2dd; border-radius: 12px; }
+.payment-input:focus-visible { outline: 4px solid #2563eb; outline-offset: 3px; }
+.payment-change { font-size: 24px; font-weight: 700; }
+.payment-qr { display: grid; place-items: center; max-width: 300px; min-height: 230px; padding: 24px; margin: 24px auto; text-align: center; border: 3px dashed #535f70; border-radius: 16px; background: #f7f8fb; font-weight: 800; }
+.payment-feedback { min-height: 28px; font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
+.payment-details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; font-size: 20px; }
+.payment-details dt { color: #535f70; }.payment-details dd { margin: 0; text-align: right; font-weight: 700; overflow-wrap: anywhere; }
+.payment-panel button:disabled { opacity: .6; cursor: wait; }
+.payment-table-wrap { overflow-x: auto; }
+.payment-table { width: 100%; border-collapse: collapse; font-size: 20px; }
+.payment-table th { background: #f7f8fb; color: #535f70; font-size: 16px; }
+.payment-table th, .payment-table td { text-align: right; padding: 20px 14px; border-bottom: 1px solid #dfe3eb; }
+.payment-table th:first-child, .payment-table td:first-child { text-align: left; }
+.payment-table td:first-child { font-weight: 700; }
+.payment-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 760px) {
+ .payment-panel { margin: 16px 12px; padding: 20px 14px; }
+ .payment-methods { grid-template-columns: 1fr; }
+ .payment-content { padding: 16px; }
+ .payment-details { font-size: 17px; }
+ .payment-table { font-size: 16px; }
+ .payment-table th { font-size: 13px; }
+ .payment-table th, .payment-table td { padding: 16px 6px; }
+}
+
+
+/* Payment screen navigation. */
+[hidden] { display: none !important; }
+
+.review-total { margin-top: 28px; }
+#review-count { display: block; color: #535f70; font-size: 16px; font-weight: 400; margin-top: 6px; }
+.review-actions { display: flex; gap: 20px; margin-top: 28px; }
+.review-actions button { min-height: 76px; margin: 0; }
+.review-actions .back { flex-shrink: 0; white-space: nowrap; }
+@media (max-width: 760px) { .review-actions { flex-direction: column; gap: 12px; }.review-actions button { width: 100%; font-size: 21px; } }

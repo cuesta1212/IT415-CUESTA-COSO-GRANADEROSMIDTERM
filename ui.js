@@ -1,5 +1,6 @@
+import { renderPaymentUI } from './payment-ui.js';
 import { products, getProduct } from './products.js';
-import { addItem, increaseQuantity, decreaseQuantity, removeItem, getOrder } from './cart.js';
+import { addItem, increaseQuantity, decreaseQuantity, removeItem, getOrder, clearCart } from './cart.js';
 
 const money = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 const productGrid = document.querySelector('#products');
@@ -120,12 +121,88 @@ cart.addEventListener('click', event => {
   } catch (error) { announce(error.message); }
 });
 
-proceed.addEventListener('click', () => {
+const selectionScreen = document.querySelector('#selection-screen');
+const reviewScreen = document.querySelector('#review-screen');
+const continuePayment = document.querySelector('#continue-payment');
+const paymentScreen = document.querySelector('#payment-screen');
+let disposePayment;
+
+function returnToSelection(reset = false) {
+  disposePayment?.();
+  disposePayment = undefined;
+  if (reset) clearCart();
+  reviewScreen.hidden = true;
+  if (reset) document.querySelector('#review-items').replaceChildren();
+  paymentScreen.replaceChildren();
+  paymentScreen.hidden = true;
+  selectionScreen.hidden = false;
+  feedback.hidden = false;
+  document.querySelector('.stage').textContent = '1 Order';
+  document.title = 'Campus Store | Order';
+  render();
+  (reset ? productGrid.querySelector('button') : proceed)?.focus();
+  window.scrollTo(0, 0);
+  announce(reset ? 'New transaction started — previous order cleared.' : 'Back to order. Your cart has been preserved.');
+}
+
+function paymentUnavailable() {
+  return { success: false, message: 'Payment processing is not connected yet. Your order has not been paid.' };
+}
+
+continuePayment.addEventListener('click', () => {
   const order = getOrder();
   if (!order.items.length) return;
-  // Integration boundary for a later review/payment module; no payment occurs.
-  document.dispatchEvent(new CustomEvent('order:proceed', { detail: order }));
-  announce(`Order ready — ${money.format(order.total)}. Payment is not available in this stage.`);
+  clearTimeout(announcementTimer);
+  feedback.textContent = '';
+  feedback.hidden = true;
+  selectionScreen.hidden = true;
+  reviewScreen.hidden = true;
+  paymentScreen.hidden = false;
+  document.querySelector('.stage').textContent = '3 Payment';
+  document.title = 'Campus Store | Payment';
+  disposePayment = renderPaymentUI(paymentScreen, order, {
+    // Replace these unavailable callbacks when Renelyn's modules are ready.
+    onCashPay: paymentUnavailable,
+    onQRConfirm: paymentUnavailable,
+    onCardPay: paymentUnavailable,
+    onBack: () => showReview(),
+    onNewTransaction: () => returnToSelection(true),
+  });
+  window.scrollTo(0, 0);
 });
 
+function showReview() {
+  const order = getOrder();
+  if (!order.items.length) { returnToSelection(); return; }
+  disposePayment?.();
+  disposePayment = undefined;
+  paymentScreen.replaceChildren();
+  paymentScreen.hidden = true;
+  selectionScreen.hidden = true;
+  reviewScreen.hidden = false;
+  feedback.hidden = false;
+  const rows = document.querySelector('#review-items');
+  rows.replaceChildren();
+  for (const item of order.items) {
+    const row = document.createElement('tr');
+    for (const value of [item.name, item.quantity, money.format(item.price), money.format(item.subtotal)]) {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      row.append(cell);
+    }
+    rows.append(row);
+  }
+  const count = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  document.querySelector('#review-count').textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+  document.querySelector('#review-total').textContent = money.format(order.total);
+  continuePayment.disabled = !order.items.length;
+  document.querySelector('.stage').textContent = '2 Review';
+  document.title = 'Campus Store | Review';
+  document.querySelector('#review-title').focus();
+  window.scrollTo(0, 0);
+  announce('Review your order. Tap Back to edit your cart.');
+}
+
+proceed.addEventListener('click', showReview);
+document.querySelector('#review-back').addEventListener('click', () => returnToSelection());
 render();
