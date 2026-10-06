@@ -1,0 +1,10 @@
+{
+  "name": "powerpuff-kiosk",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/dev-server.js",
+    "test": "node --test tests/qr-payment.test.js"
+  },
+  "engines": { "node": "22.x" }
+}

@@ -84,7 +84,7 @@ export function renderPaymentUI(container, order, {
     } finally { if (view.active()) setBusy(false); }
   }
   async function pay(callback, ...args) {
-    if (busy || completed || !view.active()) return;
+    if (busy || completed || !view.active()) return false;
     setBusy(true);
     feedback.textContent = 'Processing payment… Please wait.';
     try {
@@ -102,6 +102,7 @@ export function renderPaymentUI(container, order, {
     } catch (error) {
       if (view.active()) feedback.textContent = error?.message || 'Payment failed. Please try again.';
     } finally { if (view.active() && !completed) setBusy(false); }
+    return completed;
   }
   function showSuccess(transaction) {
     panel.setAttribute('aria-busy', 'false');
@@ -160,9 +161,9 @@ export function renderPaymentUI(container, order, {
       content.append(layout, node('p', 'Check the cash received before tapping Pay Now.', 'stage-note'),
         button('Pay Now', 'proceed', () => pay(onCashPay, input.value.trim() === '' ? NaN : Number(input.value))));
     } else if (method === 'QR Payment') {
-      content.append(renderPaymentQR(order.total),
+      content.append(renderPaymentQR(order),
         node('p', `Amount due: ${amount(order.total)}`),
-        node('p', 'Scan the QR to enter the amount on your phone. This is a demo; no money is transferred. After trying the phone page, tap Confirm Payment here to complete the simulated transaction.', 'payment-description'),
+        node('p', 'Scan the QR to confirm the simulated payment and view a receipt on your phone. Kiosk confirmation is separate; use Confirm Payment here to complete this kiosk order.', 'payment-description'),
         button('Confirm Payment', 'proceed', () => pay(onQRConfirm)));
     } else {
       content.append(node('p', `Amount due: ${amount(order.total)}`),

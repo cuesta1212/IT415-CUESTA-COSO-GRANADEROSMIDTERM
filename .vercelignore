@@ -1,0 +1,6 @@
+.local/
+tests/
+scripts/
+.env
+.env.*
+!.env.example

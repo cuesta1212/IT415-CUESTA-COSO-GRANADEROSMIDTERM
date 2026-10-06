@@ -12,17 +12,25 @@
     <header><span class="store-mark" aria-hidden="true">P</span><div><strong>Powerpuff Store</strong><small>QR payment demonstration</small></div></header>
     <span class="demo-badge">DEMO · NO REAL PAYMENT</span>
     <h1>Pay your order</h1>
-    <p class="intro">Enter the amount shown on the kiosk.</p>
+    <p class="intro">Check the amount below, then tap Confirm Payment.</p>
     <div class="amount-due"><span>Amount due</span><strong id="mobile-total">—</strong></div>
     <form id="mobile-payment-form" novalidate>
       <label for="mobile-amount">Amount to pay (₱)</label>
       <input id="mobile-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-describedby="mobile-feedback" required>
       <div id="mobile-keypad" class="mobile-keypad" role="group" aria-label="Payment amount keypad"></div>
       <div class="quick-actions"><button id="mobile-clear" type="button">Clear</button><button id="mobile-exact" type="button">Exact amount</button></div>
-      <button class="confirm-payment" type="submit">Confirm Demo Payment</button>
+      <button class="confirm-payment" type="submit">Confirm Payment</button>
     </form>
     <p id="mobile-feedback" class="mobile-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
-    <footer>No money is transferred. This phone page does not update the kiosk automatically. Return to the kiosk and tap <strong>Confirm Payment</strong> to complete the simulated transaction and receipt.</footer>
+    <button id="mobile-retry" class="confirm-payment" type="button" hidden>Retry connection</button>
+    <section id="mobile-success" class="mobile-success" hidden aria-labelledby="mobile-success-title">
+      <span class="success-mark" aria-hidden="true">✓</span>
+      <h2 id="mobile-success-title" tabindex="-1">Payment Confirmed</h2>
+      <p id="mobile-success-amount"></p>
+      <p>Your simulated payment is complete. Your receipt is shown below.</p>
+      <div id="mobile-receipt" aria-label="Payment receipt"></div>
+    </section>
+    <footer>This is a simulation; no real money is transferred. Your phone receipt is separate from the kiosk. Use Confirm Payment on the kiosk to complete its order.</footer>
   </main>
 </body>
 </html>
