@@ -3,30 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PowePuff Store | Order</title>
+  <title>Powerpuff Store | Order</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="kiosk.css">
   <script type="module" src="ui.js"></script>
 </head>
 <body>
+ <div class="kiosk-shell">
+  <aside class="sidebar" aria-label="Store navigation">
+    <a class="store-brand" href="#" id="brand-menu"><span class="store-logo" aria-hidden="true">P</span><span><strong>POWERPUFF<br>STORE</strong><small>Self-service kiosk</small></span></a>
+    <nav><button id="nav-menu" class="nav-button active" aria-current="page"><span data-icon="Food"></span>Menu</button><button id="nav-tables" class="nav-button"><span data-icon="table"></span>Table Services</button></nav>
+    <div class="sidebar-note"><strong>A little treat,<br>a happy day.</strong><p>Choose your favorites and order at your own pace.</p></div>
+    <small class="touch-note">Touch to order</small>
+  </aside>
+  <div class="workspace">
   <header class="header">
-    <div class="brand"><span class="logo">CS</span><div><strong>PowePuff Store</strong><span>Self-service kiosk</span></div></div>
+    <button id="open-menu" class="menu-toggle" aria-label="Show all products">☰</button>
+    <label class="search"><span data-icon="search"></span><input id="product-search" type="search" placeholder="Search products here…" aria-label="Search products"></label>
     <span class="stage">1 Order</span>
   </header>
   <main id="selection-screen">
     <section class="catalog" aria-labelledby="catalog-title">
-      <div class="catalog-heading"><h1 id="catalog-title">Tap a product to add it</h1><div class="filters" role="group" aria-label="Product categories"></div></div>
+      <div class="catalog-heading"><div><small>FRESH PICKS · EVERYDAY FAVORITES</small><h1 id="catalog-title">What would you like today?</h1></div></div>
+      <div class="filters" role="group" aria-label="Product categories"></div>
       <div id="products" class="product-grid"></div>
     </section>
     <section class="order" aria-labelledby="order-title">
-      <div class="order-heading"><h2 id="order-title">Your Order</h2><span id="item-count">0 items</span></div>
+      <div class="order-heading"><div><h2 id="order-title">Your Order</h2><small id="order-table-label">Choose a table in Table Services</small></div><span id="item-count">0 items</span></div>
       <div id="cart" class="cart"></div>
       <div class="order-footer">
         <div class="total"><span>Total</span><strong id="total">₱0.00</strong></div>
         <button id="proceed" class="proceed" disabled>Review Order <span aria-hidden="true">→</span></button>
-        <p class="stage-note">Payment processing is not connected yet.</p>
+        <p class="stage-note">Cash payment · QR and card simulations</p>
       </div>
     </section>
   </main>
+  <section id="table-screen" class="payment-panel" hidden aria-labelledby="tables-title"><h1 id="tables-title" tabindex="-1">Table Services</h1><p class="payment-description">Select a table for this kiosk session. Your order stays with you.</p><div id="table-options" class="table-options"></div><p class="stage-note">Table selection is for this session only. Live availability and reservations are not connected.</p><button id="tables-menu" class="proceed">Back to Menu →</button></section>
   <section id="review-screen" class="payment-panel" hidden aria-labelledby="review-title">
     <h1 id="review-title" tabindex="-1">Review your order</h1>
     <p class="payment-description">Check your items before paying. Tap Back to make changes — your cart stays intact.</p>
@@ -39,9 +51,11 @@
     </div>
     <div class="total review-total"><span>Total <small id="review-count"></small></span><strong id="review-total">₱0.00</strong></div>
     <div class="review-actions"><button id="review-back" class="back">← Back</button><button id="continue-payment" class="proceed" disabled>Continue to Payment →</button></div>
-    <p class="stage-note">Payment processing is not connected yet.</p>
+    <p class="stage-note">QR and card payments are simulations. No real charges are made.</p>
   </section>
   <div id="payment-screen" hidden></div>
   <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Ready. Tap a product to start your order.</div>
+  </div>
+ </div>
 </body>
 </html>

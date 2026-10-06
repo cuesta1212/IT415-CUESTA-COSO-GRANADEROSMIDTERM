@@ -1,6 +1,9 @@
 import { renderPaymentUI } from './payment-ui.js';
+import { payCash, payQR, payCard } from './payments.js';
+import { resetTransaction } from './transactions.js';
+import { iconMarkup } from './icons.js';
 import { products, getProduct } from './products.js';
-import { addItem, increaseQuantity, decreaseQuantity, removeItem, getOrder, clearCart } from './cart.js';
+import { addItem, increaseQuantity, decreaseQuantity, removeItem, getOrder } from './cart.js';
 
 const money = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 const productGrid = document.querySelector('#products');
@@ -8,6 +11,7 @@ const cart = document.querySelector('#cart');
 const feedback = document.querySelector('#feedback');
 const proceed = document.querySelector('#proceed');
 let category = 'All';
+let searchQuery = '';
 let announcementTimer;
 const presentation = {
   coffee: { category: 'Drinks', icon: '☕', color: 'coffee' },
@@ -26,7 +30,7 @@ function announce(message) {
 
 function renderProducts(order) {
   productGrid.replaceChildren();
-  for (const product of products.filter(item => category === 'All' || presentation[item.id].category === category)) {
+  for (const product of products.filter(item => (category === 'All' || presentation[item.id].category === category) && item.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))) {
     const visual = presentation[product.id];
     const quantity = order.items.find(item => item.id === product.id)?.quantity ?? 0;
     const button = document.createElement('button');
@@ -35,9 +39,11 @@ function renderProducts(order) {
     button.setAttribute('aria-label', `Add ${product.name}, ${money.format(product.price)}${quantity ? `, ${quantity} in cart` : ''}`);
     button.innerHTML = `<span class="product-art ${visual.color}" aria-hidden="true">${visual.icon}</span>
       <span class="product-info"><strong>${product.name}</strong><span>${money.format(product.price)}</span></span>
+      <span class="product-add">${quantity ? 'Add another' : 'Add to Dish'} <b aria-hidden="true">+</b></span>
       ${quantity ? `<span class="badge" aria-hidden="true">${quantity}</span>` : ''}`;
     productGrid.append(button);
   }
+  if (!productGrid.children.length) productGrid.textContent = 'No products found. Try another search.';
 }
 
 function renderCart(order) {
@@ -86,7 +92,8 @@ function render() {
 const filters = document.querySelector('.filters');
 for (const name of ['All', 'Drinks', 'Food', 'Snacks']) {
   const button = document.createElement('button');
-  button.textContent = name;
+  button.innerHTML = `${iconMarkup(name)}<strong>${name === 'All' ? 'All Products' : name}</strong><small>${products.filter(item => name === 'All' || presentation[item.id].category === name).length} products</small>`;
+  button.setAttribute('aria-label', name);
   button.setAttribute('aria-pressed', String(name === category));
   button.addEventListener('click', () => {
     category = name;
@@ -125,12 +132,53 @@ const selectionScreen = document.querySelector('#selection-screen');
 const reviewScreen = document.querySelector('#review-screen');
 const continuePayment = document.querySelector('#continue-payment');
 const paymentScreen = document.querySelector('#payment-screen');
+const tableScreen = document.querySelector('#table-screen');
 let disposePayment;
 
+for (const element of document.querySelectorAll('[data-icon]')) element.innerHTML = iconMarkup(element.dataset.icon);
+document.querySelector('#product-search').addEventListener('input', event => { searchQuery = event.target.value; renderProducts(getOrder()); });
+function navigation(name) {
+  for (const button of document.querySelectorAll('.nav-button')) {
+    const selected = button.id === `nav-${name}`;
+    button.classList.toggle('active', selected);
+    if (selected) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current');
+  }
+}
+function canNavigate() { return !paymentScreen.querySelector('[aria-busy="true"]'); }
+function openMenu(event) {
+  event.preventDefault();
+  if (!canNavigate()) return;
+  category = 'All'; searchQuery = ''; document.querySelector('#product-search').value = '';
+  for (const filter of filters.children) filter.setAttribute('aria-pressed', String(filter.getAttribute('aria-label') === 'All'));
+  returnToSelection();
+}
+for (const id of ['brand-menu', 'nav-menu', 'open-menu', 'tables-menu']) document.querySelector(`#${id}`).addEventListener('click', openMenu);
+document.querySelector('#nav-tables').addEventListener('click', () => {
+  if (!canNavigate()) return;
+  disposePayment?.(); disposePayment = undefined;
+  paymentScreen.replaceChildren(); paymentScreen.hidden = true;
+  selectionScreen.hidden = true; reviewScreen.hidden = true; tableScreen.hidden = false;
+  feedback.hidden = false; navigation('tables');
+  document.querySelector('.stage').textContent = 'Table Services';
+  document.querySelector('#tables-title').focus();
+});
+for (let number = 1; number <= 6; number++) {
+  const option = document.createElement('button'); option.className = 'table-option';
+  option.innerHTML = `${iconMarkup('table')}<strong>Table ${number}</strong><small>Tap to select</small>`;
+  option.setAttribute('aria-pressed', 'false');
+  option.addEventListener('click', () => {
+    for (const table of document.querySelectorAll('.table-option')) table.setAttribute('aria-pressed', String(table === option));
+    document.querySelector('#order-table-label').textContent = `Table ${number} · This session`;
+    announce(`Table ${number} selected.`);
+  });
+  document.querySelector('#table-options').append(option);
+}
+
 function returnToSelection(reset = false) {
+  tableScreen.hidden = true; navigation('menu');
   disposePayment?.();
   disposePayment = undefined;
-  if (reset) clearCart();
+  if (reset) resetTransaction();
   reviewScreen.hidden = true;
   if (reset) document.querySelector('#review-items').replaceChildren();
   paymentScreen.replaceChildren();
@@ -143,10 +191,6 @@ function returnToSelection(reset = false) {
   (reset ? productGrid.querySelector('button') : proceed)?.focus();
   window.scrollTo(0, 0);
   announce(reset ? 'New transaction started — previous order cleared.' : 'Back to order. Your cart has been preserved.');
-}
-
-function paymentUnavailable() {
-  return { success: false, message: 'Payment processing is not connected yet. Your order has not been paid.' };
 }
 
 function renderReview() {
@@ -181,10 +225,9 @@ continuePayment.addEventListener('click', () => {
   document.querySelector('.stage').textContent = '3 Payment';
   document.title = 'Campus Store | Payment';
   disposePayment = renderPaymentUI(paymentScreen, order, {
-    // Replace these unavailable callbacks when Renelyn's modules are ready.
-    onCashPay: paymentUnavailable,
-    onQRConfirm: paymentUnavailable,
-    onCardPay: paymentUnavailable,
+    onCashPay: amountPaid => payCash(order, amountPaid),
+    onQRConfirm: () => payQR(order),
+    onCardPay: () => payCard(order),
     onBack: () => showReview(),
     onNewTransaction: () => returnToSelection(true),
   });
@@ -192,6 +235,7 @@ continuePayment.addEventListener('click', () => {
 });
 
 function showReview() {
+  tableScreen.hidden = true;
   const order = getOrder();
   if (!order.items.length) { returnToSelection(); return; }
   disposePayment?.();

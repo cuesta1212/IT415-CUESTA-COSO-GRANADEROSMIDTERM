@@ -1,4 +1,5 @@
 const money = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+import { iconMarkup } from './icons.js';
 const mounts = new WeakMap();
 const amount = value => typeof value === 'number' && Number.isFinite(value) ? money.format(value) : '—';
 function node(tag, text, className) {
@@ -118,7 +119,8 @@ export function renderPaymentUI(container, order, {
     if (method === 'Cash') {
       const label = node('label', 'Amount paid', 'payment-label');
       const input = node('input', undefined, 'payment-input');
-      input.type = 'number'; input.step = 'any'; input.inputMode = 'decimal';
+      input.type = 'text'; input.inputMode = 'decimal'; input.autocomplete = 'off';
+      input.placeholder = '0.00';
       input.value = cashValue;
       label.append(input);
       const preview = node('p', '', 'payment-change');
@@ -129,21 +131,48 @@ export function renderPaymentUI(container, order, {
       }
       input.addEventListener('input', updatePreview);
       updatePreview();
-      content.append(label, preview, node('p', 'Preview only. Payment validation is handled when you tap Pay Now.', 'stage-note'),
+      const layout = node('div', undefined, 'cash-layout');
+      const fields = node('div', undefined, 'cash-fields');
+      const quick = node('div', undefined, 'cash-quick');
+      quick.setAttribute('role', 'group'); quick.setAttribute('aria-label', 'Quick cash amounts');
+      for (const [text, value] of [['Exact amount', order.total], ['₱100', 100], ['₱200', 200], ['₱500', 500]]) {
+        quick.append(button(text, 'cash-quick-button', () => { input.value = String(value); updatePreview(); }));
+      }
+      preview.setAttribute('aria-live', 'polite');
+      fields.append(node('p', 'Tap the keypad to enter the cash received.', 'payment-description'), label, quick, preview);
+      const keypad = node('div', undefined, 'cash-keypad');
+      keypad.setAttribute('role', 'group'); keypad.setAttribute('aria-label', 'Cash amount keypad');
+      for (const key of ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫']) {
+        const control = button(key, 'cash-key', () => {
+          const value = input.value;
+          if (key === '⌫') input.value = value.slice(0, -1);
+          else if (key === '.') { if (!value.includes('.')) input.value = `${value || '0'}.`; }
+          else if (!value.includes('.') || value.split('.')[1].length < 2) input.value = value === '0' ? key : value + key;
+          updatePreview();
+        });
+        if (key === '⌫') control.setAttribute('aria-label', 'Delete last digit');
+        if (key === '.') control.setAttribute('aria-label', 'Decimal point');
+        keypad.append(control);
+      }
+      keypad.append(button('Clear amount', 'cash-clear', () => { input.value = ''; updatePreview(); }));
+      layout.append(fields, keypad);
+      content.append(layout, node('p', 'Check the cash received before tapping Pay Now.', 'stage-note'),
         button('Pay Now', 'proceed', () => pay(onCashPay, input.value.trim() === '' ? NaN : Number(input.value))));
     } else if (method === 'QR Payment') {
       content.append(node('div', 'QR CODE PLACEHOLDER — not scannable', 'payment-qr'),
         node('p', `Amount due: ${amount(order.total)}`),
-        node('p', 'A payment QR code will appear here when payment processing is connected.', 'payment-description'),
+        node('p', 'Simulation only: no scan or money transfer is required. Tap Confirm Payment to simulate a successful payment.', 'payment-description'),
         button('Confirm Payment', 'proceed', () => pay(onQRConfirm)));
     } else {
       content.append(node('p', `Amount due: ${amount(order.total)}`),
-        node('p', 'Please tap, insert, or swipe your card when card processing is connected.', 'payment-description'),
+        node('p', 'Tap, insert, or swipe at a connected terminal. In this simulation, tap Process Payment; no card details or real charge are required.', 'payment-description'),
         button('Process Payment', 'proceed', () => pay(onCardPay)));
     }
   }
   for (const method of ['Cash', 'QR Payment', 'Credit/Debit Card']) {
-    methods.append(button(method, 'back', () => switchMethod(method)));
+    const choice = button(method, 'back', () => switchMethod(method));
+    const symbol = node('span', undefined, 'payment-method-icon');
+    symbol.innerHTML = iconMarkup(method); choice.prepend(symbol); methods.append(choice);
   }
   switchMethod('Cash');
   return view.dispose;
