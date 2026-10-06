@@ -1,5 +1,6 @@
 const money = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 import { iconMarkup } from './icons.js';
+import { renderPaymentQR } from './qr-payment.js';
 const mounts = new WeakMap();
 const amount = value => typeof value === 'number' && Number.isFinite(value) ? money.format(value) : '—';
 function node(tag, text, className) {
@@ -159,9 +160,9 @@ export function renderPaymentUI(container, order, {
       content.append(layout, node('p', 'Check the cash received before tapping Pay Now.', 'stage-note'),
         button('Pay Now', 'proceed', () => pay(onCashPay, input.value.trim() === '' ? NaN : Number(input.value))));
     } else if (method === 'QR Payment') {
-      content.append(node('div', 'QR CODE PLACEHOLDER — not scannable', 'payment-qr'),
+      content.append(renderPaymentQR(order.total),
         node('p', `Amount due: ${amount(order.total)}`),
-        node('p', 'Simulation only: no scan or money transfer is required. Tap Confirm Payment to simulate a successful payment.', 'payment-description'),
+        node('p', 'Scan the QR to enter the amount on your phone. This is a demo; no money is transferred. After trying the phone page, tap Confirm Payment here to complete the simulated transaction.', 'payment-description'),
         button('Confirm Payment', 'proceed', () => pay(onQRConfirm)));
     } else {
       content.append(node('p', `Amount due: ${amount(order.total)}`),

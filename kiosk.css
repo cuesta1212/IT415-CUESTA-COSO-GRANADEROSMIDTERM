@@ -1,4 +1,7 @@
 /* Reference-inspired kiosk theme. Product data and payment callbacks stay unchanged. */
+.payment-qr-scannable { display:block; max-width:370px; border:1px solid #cbded1; background:white; padding:20px; }
+.payment-qr-image { max-width:280px; margin:0 auto 14px; background:white; }.payment-qr-image svg { display:block; width:100%; height:auto; }
+.qr-payment-link { display:inline-block; color:#008e28; font-size:15px; padding:12px 8px; }.payment-qr .qr-help { font-weight:400; font-size:12px; line-height:1.6; }
 .cash-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(240px,340px); gap:32px; margin-top:12px; }
 .cash-fields { min-width:0; }.cash-fields .payment-input { min-height:86px; font-size:40px; font-weight:700; text-align:right; padding:18px; }
 .cash-quick { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:18px; }

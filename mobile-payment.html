@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Powerpuff Store | Demo QR Payment</title>
+  <link rel="stylesheet" href="mobile-payment.css">
+  <script type="module" src="mobile-payment.js"></script>
+</head>
+<body>
+  <main class="phone-payment">
+    <header><span class="store-mark" aria-hidden="true">P</span><div><strong>Powerpuff Store</strong><small>QR payment demonstration</small></div></header>
+    <span class="demo-badge">DEMO · NO REAL PAYMENT</span>
+    <h1>Pay your order</h1>
+    <p class="intro">Enter the amount shown on the kiosk.</p>
+    <div class="amount-due"><span>Amount due</span><strong id="mobile-total">—</strong></div>
+    <form id="mobile-payment-form" novalidate>
+      <label for="mobile-amount">Amount to pay (₱)</label>
+      <input id="mobile-amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-describedby="mobile-feedback" required>
+      <div id="mobile-keypad" class="mobile-keypad" role="group" aria-label="Payment amount keypad"></div>
+      <div class="quick-actions"><button id="mobile-clear" type="button">Clear</button><button id="mobile-exact" type="button">Exact amount</button></div>
+      <button class="confirm-payment" type="submit">Confirm Demo Payment</button>
+    </form>
+    <p id="mobile-feedback" class="mobile-feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+    <footer>No money is transferred. This phone page does not update the kiosk automatically. Return to the kiosk and tap <strong>Confirm Payment</strong> to complete the simulated transaction and receipt.</footer>
+  </main>
+</body>
+</html>
